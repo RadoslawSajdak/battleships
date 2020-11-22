@@ -48,6 +48,8 @@ void Board::draw_table()
 		for (int j = 0; j < m_table.at(i).size() * 2 + 1;  j++) cout << "--";
 		cout << endl;
 	}
+
+	cout << "Move - arrows \nConfirm - Enter \nRotate ship - space \nExit - exc" << endl;
 }
 
 void Board::cursor( int row,  char cols)
@@ -80,8 +82,8 @@ void Board::cursor( int row,  char cols)
 void Board::put_ships()
 {
 
-	int X = 0;
-	int Y = 0;
+	int X = 0, Y = 0;
+	int pos_a = 0, pos_b = 0;
 	bool vertical = true;
 	vector <vector <char>> cp_board;
 	cp_board = m_table;
@@ -158,7 +160,6 @@ void Board::put_ships()
 			vertical = !vertical;
 			break;
 		case KEY_ENTER:
-			int pos_a = 0, pos_b = 0;
 			for (int i = 0; i < cp_board.size(); i++)
 			{
 				for (int j = 0; j < cp_board.at(i).size(); j++)
@@ -178,6 +179,9 @@ void Board::put_ships()
 					}
 			cp_board = m_table;
 			ship_iterator++;
+			break;
+		case KEY_ESCAPE:
+			exit(EXIT_SUCCESS);
 			break;
 		}
 		draw_table();
