@@ -44,6 +44,10 @@ void Board::clear_table(vector <vector < char > > * table)
 	table->at(8).at(8) = '?'; // initialize cursor
 	draw_table(*table);
 }
+void Board::clear_table()
+{
+	clear_table(&m_table);
+}
 
 void Board::draw_table(vector <vector < char > > table)
 {
@@ -299,9 +303,18 @@ void Board::shoot(int *p_X, char *p_Y, Board enemy)
 		temp_return = move_cursor();
 		if(enemy.m_table.at(X).at(Y - 'a') != 'o' &&\
 			enemy.m_table.at(X).at(Y - 'a') != '?') m_shoots.at(X).at(Y - 'a') = 'c';
-		else m_shoots.at(X).at(Y - 'a') = 'x';
+		else
+		{
+			m_shoots.at(X).at(Y - 'a') = 'x';
+			m_ships_left -= 1;
+		}
 	}
 	*p_X = temp_return.at(0);
 	*p_Y = temp_return.at(1) + 'a';
 	draw_table(m_shoots);
+}
+
+int Board::get_ships_val()
+{
+	return m_ships_left;
 }
