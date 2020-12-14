@@ -23,7 +23,8 @@ Board::Board()
 		m_table.push_back(cols);
 	}	
 
-	clear_table();			// This function is needed to protect us from out of range
+	clear_table(&m_table);			// This function is needed to protect us from out of range
+	m_shoots = m_table;
 }
 
 Board::~Board()
@@ -31,51 +32,52 @@ Board::~Board()
 	;
 }
 /* Simple fill up all board with zero values */
-void Board::clear_table()
+void Board::clear_table(vector <vector < char > > * table)
 {
 	for (int i = 0; i < 9; i++)
 	{
 		for (int j = 0; j < 9; j++)
 		{
-			m_table.at(i).at(j) = ' ';
+			table->at(i).at(j) = ' ';
 		}
 	}
-	m_table.at(8).at(8) = '?'; // initialize cursor
-	draw_table();
+	table->at(8).at(8) = '?'; // initialize cursor
+	draw_table(*table);
 }
 
-void Board::draw_table()
+void Board::draw_table(vector <vector < char > > table)
 {
 	/* Making A-I columns*/
 	system("CLS");
 	cout << "   ";
-	for (int i = 0; i < m_table.size(); i++) cout << char('A' + i) << "   ";
+	for (int i = 0; i < table.size(); i++) cout << char('A' + i) << "   ";
 	cout << endl;
 	/* Fill up board with actual data*/
-	for (int i = 0; i < m_table.size(); i++)
+	for (int i = 0; i < table.size(); i++)
 	{
 		cout << i << ": "; // Print row numbers
-		for (int j = 0; j < m_table.at(i).size(); j++)
+		for (int j = 0; j < table.at(i).size(); j++)
 		{
-			cout << m_table.at(i).at(j) << " | ";
+			cout << table.at(i).at(j) << " | ";
 		}
 		cout << endl;
-		for (int j = 0; j < m_table.at(i).size() * 2 + 1;  j++) cout << "--";
+		for (int j = 0; j < table.at(i).size() * 2 + 1;  j++) cout << "--";
 		cout << endl;
 	}
 	/* Simple instruction of use */
 	cout << "Move - arrows \nConfirm - Enter \nRotate ship - space \nExit - esc" << endl;
 }
 
-void Board::cursor( int row,  char cols)
+void Board::cursor( int * p_row,  char * p_cols)
 {
 	vector<char>::iterator old;
-
+	int row = *p_row;
+	char cols = *p_cols;
 	/* Finding old position of cursor and remove it*/
-	for (int i = 0; i < m_table.size(); i++)
+	for (int i = 0; i < m_shoots.size(); i++)
 	{
-		old = find(m_table.at(i).begin(), m_table.at(i).end(), '?');
-		if (old == m_table.at(i).end()) continue;
+		old = find(m_shoots.at(i).begin(), m_shoots.at(i).end(), '?');
+		if (old == m_shoots.at(i).end()) continue;
 		else
 		{
 			break;
@@ -84,14 +86,25 @@ void Board::cursor( int row,  char cols)
 
 	*old = m_previous_value;
 	/* Carousel for cursor */
+
+	if (row > 8) row = 0;
+	if (row < 0) row = 8;
+	if (cols > 'i') cols = 'a';
+	if (cols < 'a') cols = 'i';
+
 	int temp_cols = 0;
 	if (int(cols) > 96 && int(cols) < 106) temp_cols = cols - 97;
 	else if (int(cols) > 64 && int(cols) < 74) temp_cols = cols - 65;
 	else exit(EXIT_FAILURE);
 
-	m_previous_value = m_table.at(row).at(temp_cols);
- 	m_table.at(row).at(temp_cols) = '?'; 
+	*p_row = row;
+	*p_cols = cols;
+
+	m_previous_value = m_shoots.at(row).at(temp_cols);
+ 	m_shoots.at(row).at(temp_cols) = '?'; 
 	
+	draw_table(m_shoots);
+
 } 
 
 void Board::put_ships()
@@ -211,7 +224,7 @@ void Board::put_ships()
 					{
 						cout << "\n>>> You can\'t cross ships! Try again! <<< \n";
 						Sleep(2000);
-						clear_table();
+						clear_table(&m_table);
 						cp_board = m_table;
 						error = true;
 						break;
@@ -226,7 +239,7 @@ void Board::put_ships()
 					{
 						cout << "\n>>> You can\'t cross ships! Try again! <<< \n";
 						Sleep(2000);
-						clear_table();
+						clear_table(&m_table);
 						cp_board = m_table;
 						error = true;
 						break;
@@ -252,10 +265,40 @@ void Board::put_ships()
 			exit(EXIT_SUCCESS);
 			break;
 		}
-		draw_table();
+		draw_table(m_table);
 		if (ship_iterator == m_ships.size()) break;		// Putting is done while we put all ships
 	}
 
 }
 
 
+vector<int> Board::move_cursor(void)
+{
+	//vector<int> temp_return = { 0,0 };
+	for (int i = 0; i < m_shoots.size(); i++)
+	{
+		for (int j = 0; j < m_shoots.size(); j++)
+			if (m_shoots.at(i).at(j) == ' ')
+			{
+				m_shoots.at(i).at(j) = '?';
+				return{ i,j };
+			}
+	}
+	/* After fill up all board */
+	cout << " >>> Your game is done! <<<" << endl << endl;
+	exit(1);
+}
+void Board::shoot(int *p_X, char *p_Y)
+{
+	int X = *p_X;
+	int Y = *p_Y;
+	vector<int> temp_return = { 0,0 };
+	if (m_previous_value != 'c')
+	{
+		temp_return = move_cursor();
+		m_shoots.at(X).at(Y - 'a') = 'c';
+	}
+	*p_X = temp_return.at(0);
+	*p_Y = temp_return.at(1) + 'a';
+	draw_table(m_shoots);
+}

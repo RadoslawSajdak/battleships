@@ -18,15 +18,18 @@ using namespace std;
 class Board {
 private:
 	vector <vector < char > > m_table;		// Store ships and shoots
+	vector <vector < char > > m_shoots;		// Store ships and shoots
 	char m_previous_value;
 	int m_ships_left;			// Summary length of ships
 	vector <int> m_ships;					// Vector of available ships
+	vector <int> move_cursor(void);
 
 public:
 	Board();								// Constructor and Destructor without arguments
 	~Board();
-	void clear_table();						// Clear all board from ships and shoots.
-	void draw_table();						// Update view of board on the screen
-	void cursor(int row, char cols);		// Set current position of cursor
+	void clear_table(vector <vector < char > > *);						// Clear all board from ships and shoots.
+	void draw_table(vector <vector < char > >);						// Update view of board on the screen
+	void cursor(int * p_row, char * p_cols);		// Set current position of cursor
 	void put_ships();						// Use only once at the beggining of the game
+	void shoot(int *, char *);
 };

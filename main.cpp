@@ -9,12 +9,8 @@
 #endif
 using namespace std;
 
-#define KEY_UP 72
-#define KEY_DOWN 80
-#define KEY_LEFT 75
-#define KEY_RIGHT 77
 
-void welcome_screen();
+void welcome_screen();  // Useless function just to make interface more friendly
 
 int main()
 {
@@ -27,7 +23,7 @@ int main()
 
     Board player,cpu;
     player.put_ships();
-
+    //cpu.put_ships();
     /* Main program*/
     while (1) {
         /* Using keyboard to interact with app */
@@ -35,29 +31,30 @@ int main()
         int key_val = key;
         switch (key_val) {
         case KEY_UP:
-            X--;
+            X-=1;
+            cpu.cursor(&X, &Y);
             break;
         case KEY_DOWN:
-            X++;
+            X+= 1;
+            cpu.cursor(&X, &Y);
             break;
         case KEY_LEFT:
-            Y--;
+            Y-= 1;
+            cpu.cursor(&X, &Y);
             break;
         case KEY_RIGHT:
-            Y++;
+            Y+= 1;
+            cpu.cursor(&X, &Y);
+            break;
+        case KEY_ENTER:
+            cpu.shoot(&X, &Y);
             break;
         case KEY_ESCAPE:
             exit(EXIT_SUCCESS);
             break;
         } 
-        /* Out of range protection */
-        if (X > 8) X = 0;
-        if (X < 0) X = 8;
-        if (Y > 'i') Y = 'a';
-        if (Y < 'a') Y = 'i';
-        /****************************/
-        cpu.cursor(X, Y);
-        cpu.draw_table();
+        //cpu.cursor(X, Y);
+        //cpu.draw_table();
     }
 }
 
