@@ -21,9 +21,11 @@
   <ItemGroup>
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="..\source\board.cpp" />
+    <ClCompile Include="..\source\Interface.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\board.h" />
+    <ClInclude Include="..\include\Interface.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

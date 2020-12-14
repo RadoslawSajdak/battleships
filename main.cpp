@@ -7,10 +7,9 @@
 #ifndef _WINDOWS_
 #include <Windows.h> // just for sleep
 #endif
+#include <Interface.h>
 using namespace std;
 
-
-void welcome_screen();  // Useless function just to make interface more friendly
 
 int main()
 {
@@ -21,8 +20,10 @@ int main()
     int X = 0;          // 0-8 as rows in my coordinates system
     char Y = 'a';       // a-i as columns
 
+    player1_screen();
     Board player,cpu;
-    //player.put_ships();
+    player.put_ships();
+    player2_screen();
     cpu.put_ships();
     /* Main program*/
     while (1) {
@@ -59,26 +60,3 @@ int main()
 }
 
 
-
-void welcome_screen()
-{
-    cout << R"(
-                                                                                                                    
-                                                                                                                    
-    ,---,.                ___      ___      ,--,                           ,---,                                    
-  ,'  .'  \             ,--.'|_  ,--.'|_  ,--.'|                         ,--.' |      ,--,   ,-.----.               
-,---.' .' |             |  | :,' |  | :,' |  | :                         |  |  :    ,--.'|   \    /  \              
-|   |  |: |             :  : ' : :  : ' : :  : '               .--.--.   :  :  :    |  |,    |   :    |  .--.--.    
-:   :  :  /  ,--.--.  .;__,'  /.;__,'  /  |  ' |      ,---.   /  /    '  :  |  |,--.`--'_    |   | .\ : /  /    '   
-:   |    ;  /       \ |  |   | |  |   |   '  | |     /     \ |  :  /`./  |  :  '   |,' ,'|   .   : |: ||  :  /`./   
-|   :     \.--.  .-. |:__,'| : :__,'| :   |  | :    /    /  ||  :  ;_    |  |   /' :'  | |   |   |  \ :|  :  ;_     
-|   |   . | \__\/: . .  '  : |__ '  : |__ '  : |__ .    ' / | \  \    `. '  :  | | ||  | :   |   : .  | \  \    `.  
-'   :  '; | ," .--.; |  |  | '.'||  | '.'||  | '.'|'   ;   /|  `----.   \|  |  ' | :'  : |__ :     |`-'  `----.   \ 
-|   |  | ; /  /  ,.  |  ;  :    ;;  :    ;;  :    ;'   |  / | /  /`--'  /|  :  :_:,'|  | '.'|:   : :    /  /`--'  / 
-|   :   / ;  :   .'   \ |  ,   / |  ,   / |  ,   / |   :    |'--'.     / |  | ,'    ;  :    ;|   | :   '--'.     /  
-|   | ,'  |  ,     .-./  ---`-'   ---`-'   ---`-'   \   \  /   `--'---'  `--''      |  ,   / `---'.|     `--'---'   
-`----'     `--`---'                                  `----'                          ---`-'    `---`                
-                                                                                                                    
-)" << endl;
-    cout << "PRESS ANY KEY TO START!" << endl;
-}

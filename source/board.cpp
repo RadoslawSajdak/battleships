@@ -119,6 +119,7 @@ void Board::put_ships()
 	int ship_iterator = 0;		// How many ships we put
 
 	/* Main putting loop */
+	draw_table(m_table);
 	while (1) {
 		
 		char key = _getch();
