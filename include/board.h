@@ -3,6 +3,7 @@
 #include <vector>
 #include <stdlib.h>
 #include <conio.h>
+#include <Windows.h>
 
 #define KEY_UP 72
 #define KEY_DOWN 80

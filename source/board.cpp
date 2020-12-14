@@ -12,6 +12,16 @@ Board::Board()
 	m_ships.push_back(2);
 	for (int i = 0; i < 3; i++) m_ships.push_back(1);
 
+	vector < char > cols;
+	for (int i = 0; i < 9; i++)
+	{
+		cols.push_back(' ');
+	}
+	for (int i = 0; i < 9; i++)
+	{
+		m_table.push_back(cols);
+	}
+
 	clear_table();
 	
 }
@@ -23,14 +33,12 @@ Board::~Board()
 
 void Board::clear_table()
 {
-	vector < char > cols;
 	for (int i = 0; i < 9; i++)
 	{
-		cols.push_back(' ');
-	}
-	for (int i = 0; i < 9; i++)
-	{
-		m_table.push_back(cols);
+		for (int j = 0; j < 9; j++)
+		{
+			m_table.at(i).at(j) = ' ';
+		}
 	}
 	m_table.at(8).at(8) = '?'; // initialize cursor
 	draw_table();
@@ -91,7 +99,7 @@ void Board::put_ships()
 
 	int X = 0, Y = 0;
 	int pos_a = 0, pos_b = 0;
-	bool vertical = true;
+	bool vertical = true, error = false;
 	vector <vector <char>> cp_board;
 	cp_board = m_table;
 	int ship_iterator = 0;
@@ -167,6 +175,7 @@ void Board::put_ships()
 			vertical = !vertical;
 			break;
 		case KEY_ENTER:
+			error = false;
 			for (int i = 0; i < cp_board.size(); i++)
 			{
 				for (int j = 0; j < cp_board.at(i).size(); j++)
@@ -184,8 +193,50 @@ void Board::put_ships()
 						m_table.at(0).at(i) = '?';
 						break;
 					}
-			cp_board = m_table;
-			ship_iterator++;
+			if(vertical)
+			{
+				for (int j = 0; j < m_ships.at(ship_iterator); j++)
+				{
+					if (cp_board.at(X).at(Y+j) == 'o')
+					{
+						cout << "\n>>> You can\'t cross ships! Try again! <<< \n";
+						Sleep(2000);
+						clear_table();
+						cp_board = m_table;
+						error = true;
+						break;
+					}
+				}
+			}
+			if (!vertical)
+			{
+				for (int j = 0; j < m_ships.at(ship_iterator); j++)
+				{
+					if (cp_board.at(X + j).at(Y) == 'o')
+					{
+						cout << "\n>>> You can\'t cross ships! Try again! <<< \n";
+						Sleep(2000);
+						clear_table();
+						cp_board = m_table;
+						error = true;
+						break;
+					}
+				}
+			}
+			
+			
+			if (error)
+			{
+				ship_iterator = 0;
+				error = false;
+				break;
+			}
+			else 
+			{
+				ship_iterator++;
+				cp_board = m_table;
+			}
+			
 			break;
 		case KEY_ESCAPE:
 			exit(EXIT_SUCCESS);
