@@ -288,15 +288,17 @@ vector<int> Board::move_cursor(void)
 	cout << " >>> Your game is done! <<<" << endl << endl;
 	exit(1);
 }
-void Board::shoot(int *p_X, char *p_Y)
+void Board::shoot(int *p_X, char *p_Y, Board enemy)
 {
 	int X = *p_X;
 	int Y = *p_Y;
 	vector<int> temp_return = { 0,0 };
-	if (m_previous_value != 'c')
+	if (m_previous_value != 'c' && m_previous_value != 'x')
 	{
 		temp_return = move_cursor();
-		m_shoots.at(X).at(Y - 'a') = 'c';
+		if(enemy.m_table.at(X).at(Y - 'a') != 'o' &&\
+			enemy.m_table.at(X).at(Y - 'a') != '?') m_shoots.at(X).at(Y - 'a') = 'c';
+		else m_shoots.at(X).at(Y - 'a') = 'x';
 	}
 	*p_X = temp_return.at(0);
 	*p_Y = temp_return.at(1) + 'a';

@@ -22,8 +22,8 @@ int main()
     char Y = 'a';       // a-i as columns
 
     Board player,cpu;
-    player.put_ships();
-    //cpu.put_ships();
+    //player.put_ships();
+    cpu.put_ships();
     /* Main program*/
     while (1) {
         /* Using keyboard to interact with app */
@@ -47,7 +47,7 @@ int main()
             cpu.cursor(&X, &Y);
             break;
         case KEY_ENTER:
-            cpu.shoot(&X, &Y);
+            cpu.shoot(&X, &Y,cpu);
             break;
         case KEY_ESCAPE:
             exit(EXIT_SUCCESS);
