@@ -2,16 +2,17 @@
 Board::Board()
 {
 	
-	m_previous_value = ' ';
+	m_previous_value = ' ';	
 	m_ships_left = 14;
 
-	/* Array with size of ships*/
+	/* Fill up array with ships as it's len*/
 	m_ships.push_back(4);
 	m_ships.push_back(3);
 	m_ships.push_back(2);
 	m_ships.push_back(2);
 	for (int i = 0; i < 3; i++) m_ships.push_back(1);
 
+	/* Make an empty board */
 	vector < char > cols;
 	for (int i = 0; i < 9; i++)
 	{
@@ -20,17 +21,16 @@ Board::Board()
 	for (int i = 0; i < 9; i++)
 	{
 		m_table.push_back(cols);
-	}
+	}	
 
-	clear_table();
-	
+	clear_table();			// This function is needed to protect us from out of range
 }
 
 Board::~Board()
 {
 	;
 }
-
+/* Simple fill up all board with zero values */
 void Board::clear_table()
 {
 	for (int i = 0; i < 9; i++)
@@ -63,8 +63,8 @@ void Board::draw_table()
 		for (int j = 0; j < m_table.at(i).size() * 2 + 1;  j++) cout << "--";
 		cout << endl;
 	}
-
-	cout << "Move - arrows \nConfirm - Enter \nRotate ship - space \nExit - exc" << endl;
+	/* Simple instruction of use */
+	cout << "Move - arrows \nConfirm - Enter \nRotate ship - space \nExit - esc" << endl;
 }
 
 void Board::cursor( int row,  char cols)
@@ -83,7 +83,7 @@ void Board::cursor( int row,  char cols)
 	}
 
 	*old = m_previous_value;
-
+	/* Carousel for cursor */
 	int temp_cols = 0;
 	if (int(cols) > 96 && int(cols) < 106) temp_cols = cols - 97;
 	else if (int(cols) > 64 && int(cols) < 74) temp_cols = cols - 65;
@@ -97,17 +97,23 @@ void Board::cursor( int row,  char cols)
 void Board::put_ships()
 {
 
-	int X = 0, Y = 0;
-	int pos_a = 0, pos_b = 0;
-	bool vertical = true, error = false;
-	vector <vector <char>> cp_board;
+	int X = 0, Y = 0;			// Position of ship cursor on the board
+	int pos_a = 0, pos_b = 0;	// Positions of shooting cursor on the board
+	bool vertical = true;		// Orientation of current ship
+	bool error = false;			// Provide information about crossing ships
+	vector <vector <char>> cp_board; // Temporary board
 	cp_board = m_table;
-	int ship_iterator = 0;
+	int ship_iterator = 0;		// How many ships we put
+
+	/* Main putting loop */
 	while (1) {
 		
 		char key = _getch();
 		int key_val = key;
 		switch (key_val) {
+			/* Moving ships on the board*/
+			/* In every simple case we've out of range protection so user can't put any ship
+				Outside of the board*/
 		case KEY_UP:
 			if(X > 0) X--;
 			for (int i = 0; i < m_ships.at(ship_iterator); i++)
@@ -170,12 +176,15 @@ void Board::put_ships()
 			}
 
 			break;
+		/* We can switch orientation of the ship */
 		case KEY_SPACE:
 			m_table = cp_board;
 			vertical = !vertical;
 			break;
+		/* Putting ship and provide error control */
 		case KEY_ENTER:
 			error = false;
+			/* Move shooting cursor to new position if we put the ship on it */
 			for (int i = 0; i < cp_board.size(); i++)
 			{
 				for (int j = 0; j < cp_board.at(i).size(); j++)
@@ -193,6 +202,7 @@ void Board::put_ships()
 						m_table.at(0).at(i) = '?';
 						break;
 					}
+			/* Scan board and look if we crossed ships. If we, it will clear all board and restart putting*/
 			if(vertical)
 			{
 				for (int j = 0; j < m_ships.at(ship_iterator); j++)
@@ -236,14 +246,16 @@ void Board::put_ships()
 				ship_iterator++;
 				cp_board = m_table;
 			}
-			
+			/* This is way to close our program */
 			break;
 		case KEY_ESCAPE:
 			exit(EXIT_SUCCESS);
 			break;
 		}
 		draw_table();
-		if (ship_iterator == m_ships.size()) break;
+		if (ship_iterator == m_ships.size()) break;		// Putting is done while we put all ships
 	}
 
 }
+
+

@@ -17,16 +17,16 @@ using namespace std;
 
 class Board {
 private:
-	vector <vector < char > > m_table;
+	vector <vector < char > > m_table;		// Store ships and shoots
 	char m_previous_value;
-	int m_ships_left;
-	vector <int> m_ships;
+	int m_ships_left;			// Summary length of ships
+	vector <int> m_ships;					// Vector of available ships
 
 public:
-	Board();
+	Board();								// Constructor and Destructor without arguments
 	~Board();
-	void clear_table();
-	void draw_table();
-	void cursor(int row, char cols);
-	void put_ships();
+	void clear_table();						// Clear all board from ships and shoots.
+	void draw_table();						// Update view of board on the screen
+	void cursor(int row, char cols);		// Set current position of cursor
+	void put_ships();						// Use only once at the beggining of the game
 };
