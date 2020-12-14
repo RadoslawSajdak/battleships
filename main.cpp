@@ -17,8 +17,8 @@ int main()
     std::cout << "Hello World!\n";
     int X = 0;
     char Y = 'a';
-    Board cpu;
-    cpu.put_ships();
+    Board player,cpu;
+    player.put_ships();
     while (1) {
         char key = _getch();
         int key_val = key;
@@ -34,6 +34,9 @@ int main()
             break;
         case KEY_RIGHT:
             Y++;
+            break;
+        case KEY_ESCAPE:
+            exit(EXIT_SUCCESS);
             break;
         } 
         if (X > 8) X = 0;

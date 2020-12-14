@@ -24,6 +24,7 @@ private:
 public:
 	Board();
 	~Board();
+	void clear_table();
 	void draw_table();
 	void cursor(int row, char cols);
 	void put_ships();

@@ -1,7 +1,7 @@
 #include "board.h"
 Board::Board()
 {
-	vector < char > cols;
+	
 	m_previous_value = ' ';
 	m_ships_left = 14;
 
@@ -12,6 +12,18 @@ Board::Board()
 	m_ships.push_back(2);
 	for (int i = 0; i < 3; i++) m_ships.push_back(1);
 
+	clear_table();
+	
+}
+
+Board::~Board()
+{
+	;
+}
+
+void Board::clear_table()
+{
+	vector < char > cols;
 	for (int i = 0; i < 9; i++)
 	{
 		cols.push_back(' ');
@@ -22,11 +34,6 @@ Board::Board()
 	}
 	m_table.at(8).at(8) = '?'; // initialize cursor
 	draw_table();
-}
-
-Board::~Board()
-{
-	;
 }
 
 void Board::draw_table()
