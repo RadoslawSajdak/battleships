@@ -8,9 +8,52 @@
 #include <Windows.h> // just for sleep
 #endif
 #include <Interface.h>
+#include <fstream>
 using namespace std;
 
+void save(Board player_1, Board player_2)
+{
+    string data_to_save;
+    ofstream save_file;
+    if (player_1.get_ships_left() > 9 && player_2.get_ships_left() > 9)
+        data_to_save = player_1.get_table() + player_1.get_shoots() + to_string(player_1.get_ships_left()) + player_2.get_table() + player_2.get_shoots() + to_string(player_1.get_ships_left());
+    if (player_1.get_ships_left() <= 9 && player_2.get_ships_left() <= 9)
+        data_to_save = player_1.get_table() + player_1.get_shoots() + "0" + to_string(player_1.get_ships_left()) + player_2.get_table() + player_2.get_shoots() + "0" + to_string(player_1.get_ships_left());
+    else if(player_1.get_ships_left() <= 9)
+        data_to_save = player_1.get_table() + player_1.get_shoots() + "0" + to_string(player_1.get_ships_left()) + player_2.get_table() + player_2.get_shoots() + to_string(player_2.get_ships_left());
+    else if(player_2.get_ships_left() <= 9)
+        data_to_save = player_1.get_table() + player_1.get_shoots() + to_string(player_1.get_ships_left()) + player_2.get_table() + player_2.get_shoots() + "0" + to_string(player_1.get_ships_left());
+    save_file.open("Saves.txt", std::ofstream::trunc);
+    save_file << data_to_save;
+    save_file.close();
+}
 
+void load(Board* player_1, Board* player_2)
+{
+    string load_data, player_data1, player_data2;
+    ifstream load_file;
+    
+    load_file.open("Saves.txt");
+    getline(load_file, load_data);
+    load_file.close();
+
+    int loaded_len = 0;
+    for (int i = 0; i < 164; i++)
+    {
+            player_data1 += load_data[loaded_len];
+            loaded_len++;
+    }
+    cout << "Loaded: " << loaded_len << endl;
+    for (int j = 0; j < 164; j++)
+    {
+            player_data2 += load_data[loaded_len];;
+            loaded_len++;
+    }
+    cout << "Loaded: " << loaded_len << endl;
+
+    player_1->load_boards(player_data1);
+    player_2->load_boards(player_data2);
+}
 
 int main()
 {
@@ -25,11 +68,13 @@ int main()
 
     player1_screen();
     Board player,cpu;
+    load(&player, &cpu);
 #if DEBUG_LEVEL < 2
-    player.put_ships();
-#elif DEBUG_LEVEL < 1
+    //player.put_ships();
+#endif
+#if DEBUG_LEVEL < 1
     player2_screen();
-    cpu.put_ships();
+    //cpu.put_ships();
 #endif
 
     /* Main program*/
@@ -45,7 +90,8 @@ int main()
             player1_screen();
             temp_object = player;
         }
-#elif DEBUG_LEVEL < 1
+#endif
+#if DEBUG_LEVEL < 1
         else if (queue % 2 == 1)
         {
             player2_screen();
@@ -78,11 +124,18 @@ int main()
             case KEY_ENTER:
                 if (queue % 2 == 0) temp_object.shoot(&X, &Y, cpu);
                 else temp_object.shoot(&X, &Y, player);
-                queue += 1;
-                next_player = true;
-                Sleep(5000);
+
+                if (temp_object.get_prev_val() != 'c' && temp_object.get_prev_val() != 'x')
+                {
+                    queue += 1;
+                    next_player = true;
+                    Sleep(5000);
+                }
                 break;
 #endif
+            case KEY_SAVE:
+                save(player, cpu);
+                break;
             case KEY_ESCAPE:
                 exit(EXIT_SUCCESS);
                 break;

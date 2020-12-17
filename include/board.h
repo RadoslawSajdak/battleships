@@ -5,7 +5,7 @@
 #include <conio.h>
 #include <Windows.h>
 
-#define DEBUG_LEVEL 2      // 0-2 ; 2 is maximum reducing of code
+#define DEBUG_LEVEL 0      // 0-2 ; 2 is maximum reducing of code
 
 #define KEY_UP 72
 #define KEY_DOWN 80
@@ -38,4 +38,9 @@ public:
 	void put_ships();						// Use only once at the beggining of the game
 	void shoot(int *, char *, Board enemy);
 	int get_ships_val();
+	string get_table();
+	string get_shoots();
+	int get_ships_left();
+	void load_boards(string);
+	char get_prev_val();
 };

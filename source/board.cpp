@@ -188,18 +188,22 @@ void Board::put_ships()
 				}
 			break;
 		case KEY_RIGHT:
-			if( Y < 9 - m_ships.at(ship_iterator) ) Y++;
-			for (int i = 0; i < m_ships.at(ship_iterator); i++) 
-				if (vertical) {
-					m_table.at(X).at((Y + i) % 9) = 'o';
-				}
-			m_table.at(X).at((Y-1)%9) = cp_board.at(X).at((Y-1)   % 9);
-			if (!vertical)
+			if (Y < (9 - m_ships.at(ship_iterator)) && vertical)
 			{
+				Y++;
+				for (int i = 0; i < m_ships.at(ship_iterator); i++)
+					if (vertical) {
+						m_table.at(X).at((Y + i) % 9) = 'o';
+					}
+				m_table.at(X).at((Y - 1) % 9) = cp_board.at(X).at((Y - 1) % 9);
+			}
+			if (!vertical && Y < 8)
+			{
+				Y++;
 				for (int i = 0; i < m_ships.at(ship_iterator); i++)
 				{
-					m_table.at((X + i)%9).at(Y) = 'o';
-					m_table.at((X + i) % 9).at(Y - 1) = cp_board.at((X + i) % 9).at(Y - 1);
+					m_table.at((X+i)%9).at(Y) = 'o';
+					m_table.at((X+i) % 9).at(Y - 1) = cp_board.at((X + i) % 9).at(Y - 1);
 				}
 			}
 
@@ -279,6 +283,10 @@ void Board::put_ships()
 		case KEY_ESCAPE:
 			exit(EXIT_SUCCESS);
 			break;
+		if (X > 8) X = 0;
+		if (X < 0) X = 8;
+		if (Y > 'i') Y = 'a';
+		if (Y < 'a') Y = 'i';
 		}
 		draw_table(m_table);
 		if (ship_iterator == m_ships.size())
@@ -315,13 +323,12 @@ void Board::shoot(int *p_X, char *p_Y, Board enemy)
 	if (m_previous_value != 'c' && m_previous_value != 'x')
 	{
 		temp_return = move_cursor();
-		if(enemy.m_table.at(X).at(Y - 'a') != 'o' &&\
-			enemy.m_table.at(X).at(Y - 'a') != '?') m_shoots.at(X).at(Y - 'a') = 'c';
-		else
+		if (enemy.m_table.at(X).at(Y - 'a') == 'o') 
 		{
 			m_shoots.at(X).at(Y - 'a') = 'x';
 			m_ships_left -= 1;
 		}
+		else m_shoots.at(X).at(Y - 'a') = 'c';
 	}
 	*p_X = temp_return.at(0);
 	*p_Y = temp_return.at(1) + 'a';
@@ -331,4 +338,67 @@ void Board::shoot(int *p_X, char *p_Y, Board enemy)
 int Board::get_ships_val()
 {
 	return m_ships_left;
+}
+
+string Board::get_table()
+{
+	string temp_table;
+	for (int i = 0; i < m_table.size(); i++)
+	{
+		for (int j = 0; j < m_table.size(); j++)
+		{
+			temp_table += m_table.at(i).at(j);
+		}
+	}
+	return temp_table;
+}
+string Board::get_shoots()
+{
+	string temp_table;
+	for (int i = 0; i < m_shoots.size(); i++)
+	{
+		for (int j = 0; j < m_shoots.size(); j++)
+		{
+			temp_table += m_shoots.at(i).at(j);
+		}
+	}
+	return temp_table;
+}
+
+void Board::load_boards(string loaded)
+{
+	m_ships_put = true;
+	int loaded_len = 0;
+	string ships_val_s;
+	for (int i = 0; i < m_table.size(); i++)
+	{
+		for (int j = 0; j < m_table.size(); j++)
+		{
+			m_table.at(i).at(j) = loaded[loaded_len];
+			loaded_len++;
+		}
+	}
+	cout << "Loaded: " << loaded_len << endl;
+	for (int i = 0; i < m_shoots.size(); i++)
+	{
+		for (int j = 0; j < m_shoots.size(); j++)
+		{
+			m_shoots.at(i).at(j) = loaded[loaded_len];
+			loaded_len++;
+		}
+	}
+	cout << "Loaded: " << loaded_len << endl;
+	ships_val_s += loaded[loaded_len++];
+	ships_val_s += loaded[loaded_len];
+	m_ships_left = stoi(ships_val_s);
+	cout << "Ships left" << m_ships_left << endl;
+}
+
+int Board::get_ships_left()
+{
+	return m_ships_left;
+}
+char Board::get_prev_val()
+{
+	return m_previous_value;
 }
