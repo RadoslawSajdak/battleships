@@ -5,6 +5,12 @@ Board::Board()
 	m_previous_value = ' ';	
 	m_ships_left = 14;
 
+#if DEBUG_LEVEL < 2
+	m_ships_put = false;
+#else 
+	m_ships_put = true;
+#endif
+
 	/* Fill up array with ships as it's len*/
 	m_ships.push_back(4);
 	m_ships.push_back(3);
@@ -69,7 +75,11 @@ void Board::draw_table(vector <vector < char > > table)
 		cout << endl;
 	}
 	/* Simple instruction of use */
-	cout << "Move - arrows \nConfirm - Enter \nRotate ship - space \nExit - esc" << endl;
+	cout << "Move - arrows \n";
+	cout << "Confirm - enter \n";
+	cout << "Rotate ship - space \n";
+	if (m_ships_put) cout << "Save Game - s \n";
+	cout << "Exit - esc\n";
 }
 
 void Board::cursor( int * p_row,  char * p_cols)
@@ -271,7 +281,11 @@ void Board::put_ships()
 			break;
 		}
 		draw_table(m_table);
-		if (ship_iterator == m_ships.size()) break;		// Putting is done while we put all ships
+		if (ship_iterator == m_ships.size())
+		{
+			m_ships_put = true;
+			break;		// Putting is done while we put all ships
+		}
 	}
 
 }

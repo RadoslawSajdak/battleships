@@ -11,6 +11,7 @@
 using namespace std;
 
 
+
 int main()
 {
 
@@ -24,9 +25,13 @@ int main()
 
     player1_screen();
     Board player,cpu;
+#if DEBUG_LEVEL < 2
     player.put_ships();
+#elif DEBUG_LEVEL < 1
     player2_screen();
     cpu.put_ships();
+#endif
+
     /* Main program*/
 
     while (1)
@@ -34,16 +39,19 @@ int main()
         Board temp_object;
         temp_object.clear_table();
         /* Using keyboard to interact with app */
+#if DEBUG_LEVEL < 2
         if (queue % 2 == 0)
         {
             player1_screen();
             temp_object = player;
         }
-        else
+#elif DEBUG_LEVEL < 1
+        else if (queue % 2 == 1)
         {
             player2_screen();
             temp_object = cpu;
         }
+#endif
         next_player = false;
         temp_object.cursor(&X, &Y);
         while (1) {
@@ -66,6 +74,7 @@ int main()
                 Y += 1;
                 temp_object.cursor(&X, &Y);
                 break;
+#if DEBUG_LEVEL < 2
             case KEY_ENTER:
                 if (queue % 2 == 0) temp_object.shoot(&X, &Y, cpu);
                 else temp_object.shoot(&X, &Y, player);
@@ -73,6 +82,7 @@ int main()
                 next_player = true;
                 Sleep(5000);
                 break;
+#endif
             case KEY_ESCAPE:
                 exit(EXIT_SUCCESS);
                 break;

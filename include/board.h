@@ -5,6 +5,8 @@
 #include <conio.h>
 #include <Windows.h>
 
+#define DEBUG_LEVEL 2      // 0-2 ; 2 is maximum reducing of code
+
 #define KEY_UP 72
 #define KEY_DOWN 80
 #define KEY_LEFT 75
@@ -12,6 +14,7 @@
 #define KEY_ENTER 13
 #define KEY_SPACE 32
 #define KEY_ESCAPE 27
+#define KEY_SAVE 115
 
 using namespace std;
 
@@ -20,7 +23,8 @@ private:
 	vector <vector < char > > m_table;		// Store ships and shoots
 	vector <vector < char > > m_shoots;		// Store ships and shoots
 	char m_previous_value;
-	int m_ships_left;			// Summary length of ships
+	bool m_ships_put;						// I'll use it to switch between screens
+	int m_ships_left;						// Summary length of ships
 	vector <int> m_ships;					// Vector of available ships
 	vector <int> move_cursor(void);
 
