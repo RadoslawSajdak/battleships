@@ -26,6 +26,7 @@ void save(Board player_1, Board player_2)
     save_file.open("Saves.txt", std::ofstream::trunc);
     save_file << data_to_save;
     save_file.close();
+    cout << "Saved game!!" << endl;
 }
 
 void load(Board* player_1, Board* player_2)
@@ -57,26 +58,41 @@ void load(Board* player_1, Board* player_2)
 
 int main()
 {
-
+    int mode = 0;
     /* Initialize block*/
+#if DEBUG_LEVEL < 1
     welcome_screen();
+    Sleep(2000);
+    start_options();
+    while (mode > 2 || mode < 1)
+    {
+        cin >> mode;
+        if (mode != 1 && mode != 2) cout << "Wrong data input! Try again!";
+    }
+    cout << "PRESS ANY KEY TO START!" << endl;
+    
+#endif
     _getch();           // Wait for interaction
     int X = 0;          // 0-8 as rows in my coordinates system
     char Y = 'a';       // a-i as columns
     int queue = 0;      // store infos about current player
     bool next_player = false, winner = false;
 
-    player1_screen();
+    
     Board player,cpu;
-    load(&player, &cpu);
-#if DEBUG_LEVEL < 2
-    //player.put_ships();
-#endif
-#if DEBUG_LEVEL < 1
-    player2_screen();
-    //cpu.put_ships();
-#endif
+    if (mode == 1)
+    {
+        ofstream f;
+        f.open("Saves.txt", std::ofstream::trunc);
+        f.close();
 
+        player1_screen();
+        player.put_ships();
+        player2_screen();
+        cpu.put_ships();
+    }
+    else
+    load(&player, &cpu);
     /* Main program*/
 
     while (1)
