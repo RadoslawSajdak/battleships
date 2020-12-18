@@ -9,6 +9,8 @@
 #endif
 #include <Interface.h>
 #include <fstream>
+
+int mode = 0;
 using namespace std;
 
 void save(Board player_1, Board player_2)
@@ -38,27 +40,35 @@ void load(Board* player_1, Board* player_2)
     getline(load_file, load_data);
     load_file.close();
 
-    int loaded_len = 0;
-    for (int i = 0; i < 164; i++)
+    if (load_data.size() > 10)
     {
+        int loaded_len = 0;
+        for (int i = 0; i < 164; i++)
+        {
             player_data1 += load_data[loaded_len];
             loaded_len++;
-    }
-    cout << "Loaded: " << loaded_len << endl;
-    for (int j = 0; j < 164; j++)
-    {
+        }
+        cout << "Loaded: " << loaded_len << endl;
+        for (int j = 0; j < 164; j++)
+        {
             player_data2 += load_data[loaded_len];;
             loaded_len++;
-    }
-    cout << "Loaded: " << loaded_len << endl;
+        }
+        cout << "Loaded: " << loaded_len << endl;
 
-    player_1->load_boards(player_data1);
-    player_2->load_boards(player_data2);
+        player_1->load_boards(player_data1);
+        player_2->load_boards(player_data2);
+    }
+    else
+    {
+        cout << "There's no save data! Starting a new game!" << endl;
+        mode = 1;
+        Sleep(2000);
+    }
 }
 
 int main()
 {
-    int mode = 0;
     /* Initialize block*/
 #if DEBUG_LEVEL < 1
     welcome_screen();
@@ -80,6 +90,7 @@ int main()
 
     
     Board player,cpu;
+    if (mode == 2)   load(&player, &cpu);
     if (mode == 1)
     {
         ofstream f;
@@ -91,8 +102,7 @@ int main()
         player2_screen();
         cpu.put_ships();
     }
-    else
-    load(&player, &cpu);
+    
     /* Main program*/
 
     while (1)
@@ -145,7 +155,7 @@ int main()
                 {
                     queue += 1;
                     next_player = true;
-                    Sleep(5000);
+                    Sleep(2000);
                 }
                 break;
 #endif
