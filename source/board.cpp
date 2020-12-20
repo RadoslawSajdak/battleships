@@ -4,12 +4,7 @@ Board::Board()
 	
 	m_previous_value = ' ';	
 	m_ships_left = 14;
-
-#if DEBUG_LEVEL < 2
 	m_ships_put = false;
-#else 
-	m_ships_put = true;
-#endif
 
 	/* Fill up array with ships as it's len*/
 	m_ships.push_back(4);
@@ -50,6 +45,8 @@ void Board::clear_table(vector <vector < char > > * table)
 	table->at(8).at(8) = '?'; // initialize cursor
 	draw_table(*table);
 }
+
+/* Public self-clear method*/
 void Board::clear_table()
 {
 	clear_table(&m_table);
@@ -77,11 +74,12 @@ void Board::draw_table(vector <vector < char > > table)
 	/* Simple instruction of use */
 	cout << "Move - arrows \n";
 	cout << "Confirm - enter \n";
-	cout << "Rotate ship - space \n";
+	if (!m_ships_put) cout << "Rotate ship - space \n";
 	if (m_ships_put) cout << "Save Game - s \n";
 	cout << "Exit - esc\n";
 }
 
+/* Move cursor to specified position */
 void Board::cursor( int * p_row,  char * p_cols)
 {
 	vector<char>::iterator old;
@@ -298,10 +296,9 @@ void Board::put_ships()
 
 }
 
-
+/* Move cursor to first empty position */
 vector<int> Board::move_cursor(void)
 {
-	//vector<int> temp_return = { 0,0 };
 	for (int i = 0; i < m_shoots.size(); i++)
 	{
 		for (int j = 0; j < m_shoots.size(); j++)
@@ -315,11 +312,14 @@ vector<int> Board::move_cursor(void)
 	cout << " >>> Your game is done! <<<" << endl << endl;
 	exit(1);
 }
+
+/* Shooting to enemies */
 void Board::shoot(int *p_X, char *p_Y, Board enemy)
 {
 	int X = *p_X;
 	int Y = *p_Y;
 	vector<int> temp_return = { 0,0 };
+	/* We're looking for ships in enemy ships table and then then write result to our shoots table */
 	if (m_previous_value != 'c' && m_previous_value != 'x')
 	{
 		temp_return = move_cursor();
@@ -335,13 +335,10 @@ void Board::shoot(int *p_X, char *p_Y, Board enemy)
 	draw_table(m_shoots);
 }
 
-int Board::get_ships_val()
-{
-	return m_ships_left;
-}
-
+/* Return all ships table as a 81 elements string */
 string Board::get_table()
 {
+
 	string temp_table;
 	for (int i = 0; i < m_table.size(); i++)
 	{
@@ -352,6 +349,8 @@ string Board::get_table()
 	}
 	return temp_table;
 }
+
+/* Return all shoots table as a 81 elements string */
 string Board::get_shoots()
 {
 	string temp_table;
@@ -365,6 +364,7 @@ string Board::get_shoots()
 	return temp_table;
 }
 
+/* Decode string of 164 length and write it to vectors */
 void Board::load_boards(string loaded)
 {
 	m_ships_put = true;
@@ -378,7 +378,7 @@ void Board::load_boards(string loaded)
 			loaded_len++;
 		}
 	}
-	cout << "Loaded: " << loaded_len << endl;
+
 	for (int i = 0; i < m_shoots.size(); i++)
 	{
 		for (int j = 0; j < m_shoots.size(); j++)
@@ -387,11 +387,11 @@ void Board::load_boards(string loaded)
 			loaded_len++;
 		}
 	}
-	cout << "Loaded: " << loaded_len << endl;
+
 	ships_val_s += loaded[loaded_len++];
 	ships_val_s += loaded[loaded_len];
 	m_ships_left = stoi(ships_val_s);
-	cout << "Ships left" << m_ships_left << endl;
+
 }
 
 int Board::get_ships_left()

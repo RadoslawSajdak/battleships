@@ -5,8 +5,6 @@
 #include <conio.h>
 #include <Windows.h>
 
-#define DEBUG_LEVEL 0      // 0-2 ; 2 is maximum reducing of code
-
 #define KEY_UP 72
 #define KEY_DOWN 80
 #define KEY_LEFT 75
@@ -26,21 +24,23 @@ private:
 	bool m_ships_put;						// I'll use it to switch between screens
 	int m_ships_left;						// Summary length of ships
 	vector <int> m_ships;					// Vector of available ships
-	vector <int> move_cursor(void);
+	vector <int> move_cursor(void);			// Finding first empty position of cursor and move it there
+	void clear_table(vector <vector < char > >*);						// Clear all board from ships and shoots.
+	void draw_table(vector <vector < char > >);						// Update view of board on the screen
 
 public:
 	Board();								// Constructor and Destructor without arguments
 	~Board();
-	void clear_table(vector <vector < char > > *);						// Clear all board from ships and shoots.
-	void clear_table();
-	void draw_table(vector <vector < char > >);						// Update view of board on the screen
-	void cursor(int * p_row, char * p_cols);		// Set current position of cursor
-	void put_ships();						// Use only once at the beggining of the game
+
+	void clear_table();						// Self clear ships board
+	void cursor(int * p_row, char * p_cols);// Set current position of cursor
+	void put_ships();						// Used only once at the beggining of the game
 	void shoot(int *, char *, Board enemy);
-	int get_ships_val();
+	void load_boards(string);				// Decode and load data to vectors
+	
+	/* Getters */
 	string get_table();
 	string get_shoots();
 	int get_ships_left();
-	void load_boards(string);
 	char get_prev_val();
 };
